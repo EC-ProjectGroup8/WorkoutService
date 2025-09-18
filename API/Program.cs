@@ -1,6 +1,14 @@
+using Business.Services;
+using Data.Contexts;
+using Data.Interfaces;
+using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
+builder.Services.AddScoped<IWorkOutService, WorkoutService>();  
+builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 builder.Services.AddControllers();
 builder.Services.AddCors(o =>
 {
