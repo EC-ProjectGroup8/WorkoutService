@@ -1,34 +1,34 @@
 ﻿using Business.Factories;
+using Business.Interfaces;
 using Data.Entities;
 using Data.Interfaces;
-using Data.Repositories;
 using Domain.Extensions;
 using Domain.Models;
 using System.Linq.Expressions;
 
 namespace Business.Services;
 
-public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkOutService
+public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkoutService
 {
     private readonly IWorkoutRepository _workoutRepository = workoutRepository;
 
     public async Task<WorkoutResult> CreateWorkoutAsync(WorkoutCreationRequest request)
     {
-		try
-		{
-			var workoutEntity = request.MapTo<WorkoutEntity>();
-			var result = await _workoutRepository.AddAsync(workoutEntity);
-			return result.Success
-				? new WorkoutResult { Success = true } : throw new Exception("Failed to add workout entity.");
-		}
-		catch (Exception ex)
-		{
-			return new WorkoutResult
-			{
-				Success = false,
-				Error = ex.Message
-			};
-		}
+        try
+        {
+            var workoutEntity = request.MapTo<WorkoutEntity>();
+            var result = await _workoutRepository.AddAsync(workoutEntity);
+            return result.Success
+                ? new WorkoutResult { Success = true } : throw new Exception("Failed to add workout entity.");
+        }
+        catch (Exception ex)
+        {
+            return new WorkoutResult
+            {
+                Success = false,
+                Error = ex.Message
+            };
+        }
     }
 
     public async Task<WorkoutResult<IEnumerable<WorkoutResponseModel>>> GetAllWorkoutsAsync()
@@ -86,8 +86,6 @@ public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkOutServ
             Success = true,
             Result = workoutModel
         };
-
-
     }
 
 
@@ -123,7 +121,7 @@ public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkOutServ
             }
 
             return new WorkoutResult { Success = true };
-            
+
         }
         catch (Exception ex)
         {
@@ -135,4 +133,29 @@ public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkOutServ
         }
     }
 
+    public async Task<WorkoutResult> DeleteEventAsync(string id)
+    {
+        try
+        {
+            var repositoryResult = await _workoutRepository.GetAsync(x => x.Id == id);
+            if (!repositoryResult.Success || repositoryResult.Result == null)
+                throw new Exception(repositoryResult.Error ?? "No data returned from repository.");
+
+            var entityToDelete = repositoryResult.Result;
+
+            var deleteResult = await _workoutRepository.DeleteAsync(entityToDelete);
+
+            return deleteResult.Success
+                    ? new WorkoutResult { Success = true }
+                    : throw new Exception(deleteResult.Error ?? "Failed to delete workout entity.");
+        }
+        catch (Exception ex)
+        {
+            return new WorkoutResult
+            {
+                Success = false,
+                Error = ex.Message
+            };
+        }
+    }
 }
