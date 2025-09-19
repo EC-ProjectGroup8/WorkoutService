@@ -18,10 +18,16 @@ public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkOutServ
 		{
 			var workoutEntity = request.MapTo<WorkoutEntity>();
 			var result = await _workoutRepository.AddAsync(workoutEntity);
-			return result.Success
-				? new WorkoutResult { Success = true } : throw new Exception("Failed to add workout entity.");
-		}
-		catch (Exception ex)
+
+            return !result.Success
+                ? new WorkoutResult
+                {
+                    Success = false,
+                    Error = result.Error ?? "Failed to add workout entity."
+                }
+                : new WorkoutResult { Success = true };
+        }
+        catch (Exception ex)
 		{
 			return new WorkoutResult
 			{
@@ -86,8 +92,6 @@ public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkOutServ
             Success = true,
             Result = workoutModel
         };
-
-
     }
 
 
