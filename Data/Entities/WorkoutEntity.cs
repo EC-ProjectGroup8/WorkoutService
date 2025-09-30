@@ -21,4 +21,7 @@ public class WorkoutEntity
     [Required]
     public string Instructor { get; set; } = null!;
 
+    [Column(TypeName = "nvarchar(max)")]
+    public string? Description { get; set; }
+
 }

@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Domain.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 namespace Business.Factories;
 public class WorkoutFactory
 {
@@ -9,5 +10,7 @@ public class WorkoutFactory
         currentEntity.Title = updateRequest.Title!;
         currentEntity.StartTime = updateRequest.StartTime!;
         currentEntity.Instructor = updateRequest.Instructor!;
+        if (updateRequest.Description != null)
+            currentEntity.Description = updateRequest.Description;
     }
 }

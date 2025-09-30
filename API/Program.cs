@@ -12,7 +12,8 @@ builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 builder.Services.AddControllers();
 
-// CORS Policy when we have a frontend and booking API
+
+// Apply new CORS policy here later
 //builder.Services.AddCors(o =>
 //{
 //    o.AddPolicy("CorsPolicy", p =>
@@ -24,6 +25,14 @@ builder.Services.AddControllers();
 //             .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
 //    });
 //});
+
+builder.Services.AddCors(o =>
+{
+    o.AddDefaultPolicy(p =>
+        p.AllowAnyOrigin()
+         .AllowAnyHeader()
+         .AllowAnyMethod());
+});
 
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
@@ -39,7 +48,7 @@ app.UseSwaggerUI(c => {
 });
 
 app.UseHttpsRedirection();
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+app.UseCors();
 
 //app.UseAuthentication();
 //app.UseAuthorization();

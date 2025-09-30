@@ -7,4 +7,5 @@ public class WorkoutResponseModel
     public string Location { get; set; } = null!;
     public DateTime StartTime { get; set; }
     public string Instructor { get; set; } = null!;
+    public string? Description { get; set; }
 }
