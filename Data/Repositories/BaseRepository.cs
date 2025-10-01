@@ -66,6 +66,29 @@ public abstract partial class BaseRepository<TEntity>(DataContext context) : IBa
         }
     }
 
+    public virtual async Task<RepositoryResult<IEnumerable<TEntity>>> GetManyAsync(Expression<Func<TEntity, bool>> expression)
+    {
+        try
+        {
+            var entities = await _table.Where(expression).ToListAsync();
+
+            return new RepositoryResult<IEnumerable<TEntity>> 
+            { 
+                Success = true, 
+                Result = entities 
+            };
+
+        }
+        catch (Exception ex)
+        {
+            return new RepositoryResult<IEnumerable<TEntity>>
+            { 
+                Success = false,
+                Error = ex.Message
+            };
+        }
+    }
+
     public virtual async Task<RepositoryResult> UpdateAsync(TEntity entity)
     {
         try
