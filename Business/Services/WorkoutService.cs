@@ -90,6 +90,39 @@ public class WorkoutService(IWorkoutRepository workoutRepository) : IWorkoutServ
         };
     }
 
+    public async Task<WorkoutResult<IEnumerable<WorkoutResponseModel>>> GetManyWorkoutsByExpressionAsync(Expression<Func<WorkoutEntity, bool>> expression)
+    {
+        try
+        {
+            var repositoryResult = await _workoutRepository.GetManyAsync(expression);
+
+            if (!repositoryResult.Success || repositoryResult.Result == null)
+            {
+                return new WorkoutResult<IEnumerable<WorkoutResponseModel>>
+                {
+                    Success = false,
+                    Error = repositoryResult.Error ?? "No data returned from repository."
+                };
+            }
+
+            var models = repositoryResult.Result.Select(x => x.MapTo<WorkoutResponseModel>()).ToList();
+
+            return new WorkoutResult<IEnumerable<WorkoutResponseModel>>
+            {
+                Success = true,
+                Result = models
+            };
+        }
+        catch (Exception ex)
+        {
+            return new WorkoutResult<IEnumerable<WorkoutResponseModel>>
+            {
+                Success = false,
+                Error = ex.Message
+            };
+        }
+    }
+
 
     public async Task<WorkoutResult> UpdateWorkoutAsync(string id, WorkoutCreationRequest updateRequest)
     {
