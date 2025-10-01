@@ -32,6 +32,26 @@ public class WorkoutController(IWorkoutService workoutService) : ControllerBase
             : NotFound();
     }
 
+    [HttpGet("batch")]
+    public async Task<IActionResult> GetWorkoutsByIds([FromQuery] string? ids)
+    {
+
+        var idList = string.IsNullOrWhiteSpace(ids) ? [] : ids.Split(',')
+          .Select(s => s.Trim())
+          .Where(s => s.Length > 0)
+          .ToList();
+
+        if (idList.Count == 0)
+              return BadRequest("ids is required");
+
+        var result = await _workoutService.GetManyWorkoutsByExpressionAsync(x => idList.Contains(x.Id));
+
+        if (!result.Success)
+            return StatusCode(500, result.Error ?? "Failed to fetch workouts.");
+
+        return Ok(result.Result ?? []);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateWorkout([FromBody] WorkoutCreationRequest request)
     {

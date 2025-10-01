@@ -8,6 +8,7 @@ namespace Data.Interfaces
         Task<RepositoryResult> DeleteAsync(TEntity entity);
         Task<RepositoryResult<IEnumerable<TEntity>>> GetAllAsync();
         Task<RepositoryResult<TEntity?>> GetAsync(Expression<Func<TEntity, bool>> expression);
+        Task<RepositoryResult<IEnumerable<TEntity>>> GetManyAsync(Expression<Func<TEntity, bool>> expression);
         Task<RepositoryResult> UpdateAsync(TEntity entity);
     }
 }

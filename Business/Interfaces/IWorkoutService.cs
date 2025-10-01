@@ -11,5 +11,6 @@ namespace Business.Interfaces
         Task<WorkoutResult<WorkoutResponseModel>> GetWorkoutByExpressionAsync(Expression<Func<WorkoutEntity, bool>> expression);
         Task<WorkoutResult> UpdateWorkoutAsync(string id, WorkoutCreationRequest updateRequest);
         Task<WorkoutResult> DeleteEventAsync(string id);
+        Task<WorkoutResult<IEnumerable<WorkoutResponseModel>>> GetManyWorkoutsByExpressionAsync(Expression<Func<WorkoutEntity, bool>> expression);
     }
 }
